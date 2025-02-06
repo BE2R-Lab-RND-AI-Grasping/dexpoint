@@ -2,6 +2,9 @@ build
 .vscode
 .pyc
 .ktx
+/assets/checkpoints/
+/assets/best/
+/logs/
 cmake-build-debug
 /cmake-build-debug/
 /.ccls-cache/
