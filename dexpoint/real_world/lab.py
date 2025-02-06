@@ -14,7 +14,7 @@ DESK2ROBOT_Z_AXIS = -0.05
 RELOCATE_BOUND = [0.2, 0.8, -0.4, 0.4, DESK2ROBOT_Z_AXIS + 0.005, 0.6]
 
 # TODO:
-ROBOT2BASE = Pose(p=np.array([-0.55, 0., -DESK2ROBOT_Z_AXIS]))
+ROBOT2BASE = Pose(p=np.array([-0.7, 0., -DESK2ROBOT_Z_AXIS])) #Pose(p=np.array([-0.55, 0., -DESK2ROBOT_Z_AXIS]))
 
 # Table size
 TABLE_XY_SIZE = np.array([0.6, 1.2])

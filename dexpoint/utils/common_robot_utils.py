@@ -29,13 +29,16 @@ def generate_free_robot_hand_info() -> Dict[str, FreeRobotInfo]:
     svh_hand_free_info = FreeRobotInfo(path="robot/svh_hand_right.urdf", dof=26, palm_name="right_hand_e1")
     mano_hand_free_info = FreeRobotInfo(path="robot/mano_hand_free.urdf", dof=51, palm_name="palm")
     panda_hand_free_info = FreeRobotInfo(path="robot/panda_hand_free.urdf", dof=8, palm_name="panda_hand")
+    
+    uhvat_prl_free = FreeRobotInfo(path="robot/uhvat_prl.urdf", dof=2, palm_name="uhvat_link_0")
 
     info_dict = dict(shadow_hand_free=shadow_hand_free_info,
                      allegro_hand_free=allegro_hand_free_info,
                      svh_hand_free=svh_hand_free_info,
                      mano_hand_free=mano_hand_free_info,
                      panda_hand_free=panda_hand_free_info,
-                     adroit_hand_free=adroit_hand_free_info)
+                     adroit_hand_free=adroit_hand_free_info,
+                     uhvat_prl_free=uhvat_prl_free)
     return info_dict
 
 
@@ -58,12 +61,37 @@ def generate_arm_robot_hand_info() -> Dict[str, ArmRobotInfo]:
         path="robot/xarm6_description/xarm6_allegro_digit_wrist_mounted_rotate.urdf",
         hand_dof=16, arm_dof=6, palm_name="palm_center", arm_init_qpos=[0, 0, 0, np.pi, np.pi / 2, np.pi],
         root_offset=[0.00, 0, 0])
+    
+    uhvat_hand_iiwa14 = ArmRobotInfo(
+        path="robot/iiwa_uhvat.urdf",
+        hand_dof=2, arm_dof=7, palm_name="palm_center", arm_init_qpos=[0.09820537,  1.0208232,   2.9670658,
+                                                                       1.987451,    2.9671504,  -1.3923272,
+                                                                     -3.0492945],
+        root_offset=[0, 0, 0])
+
+    uhvat_prl_hand_iiwa14 = ArmRobotInfo(
+        path="robot/iiwa_uhvat_prl.urdf",
+        hand_dof=2, arm_dof=7, palm_name="palm_center", arm_init_qpos=[0.09820537,  1.0208232,   2.9670658,
+                                                                       1.987451,    2.9671504,  -1.3923272,
+                                                                     -3.0492945],
+        root_offset=[0, 0, 0])
+
+    barret_hand_iiwa14 = ArmRobotInfo(
+        path="robot/iiwa_barret.urdf",
+        hand_dof=8, arm_dof=7, palm_name="palm_center", arm_init_qpos=[-0.036,  1.204,   2.9670658,
+                                                                       1.906,    2.9671504,  -1.555,
+                                                                     -2.926],
+        root_offset=[0, 0, 0])
+
     info_dict = dict(
         shadow_hand_xarm6=shadow_hand_xarm6,
         allegro_hand_xarm6=allegro_hand_xarm6,
         allegro_hand_xarm6_wrist_mounted_face_down=allegro_hand_xarm6_wrist_mounted_face_down,
         allegro_hand_xarm6_wrist_mounted_face_front=allegro_hand_xarm6_wrist_mounted_face_front,
         allegro_hand_digit_xarm6_wrist_mounted_face_front=allegro_hand_digit_xarm6_wrist_mounted_face_front,
+        uhvat_hand_iiwa14=uhvat_hand_iiwa14,
+        uhvat_prl_hand_iiwa14=uhvat_prl_hand_iiwa14,
+        barret_hand_iiwa14=barret_hand_iiwa14
     )
     return info_dict
 
@@ -137,6 +165,15 @@ def load_robot(scene: sapien.Scene, robot_name, disable_self_collision=True) -> 
             if name in arm_joint_names:
                 joint.set_drive_property(*(1 * robot_arm_control_params), mode="force")
             else:
+                joint.set_drive_property(*(1 * finger_control_params), mode="force")
+    elif "iiwa" in robot_name:
+        arm_joint_names = [f"lbr_iiwa_joint_{i}" for i in range(1, 8)]
+        for joint in robot.get_active_joints():
+            name = joint.get_name()
+            if name in arm_joint_names:
+                joint.set_drive_property(*(1 * robot_arm_control_params), mode="force")
+            else:
+                finger_control_params = np.array([20, 6, 1])
                 joint.set_drive_property(*(1 * finger_control_params), mode="force")
     else:
         raise NotImplementedError

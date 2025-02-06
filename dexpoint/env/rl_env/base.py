@@ -148,11 +148,17 @@ class BaseRLEnv(BaseSimulationEnv, gym.Env):
         arm_qvel = np.clip(arm_qvel, -np.pi / 1, np.pi / 1)
         arm_qpos = arm_qvel * self.control_time_step + self.robot.get_qpos()[:self.arm_dof]
 
-        hand_qpos = recover_action(action[6:], self.robot.get_qlimits()[self.arm_dof:])
+        hand_limits = self.robot.get_qlimits()[self.arm_dof:]
+        max_limits = np.max(np.abs(hand_limits), axis=1)
+        hand_limits = np.c_[-max_limits, max_limits]
+        # hand_qpos = recover_action(action[6:], self.robot.get_qlimits()[self.arm_dof:])
+        hand_qpos = recover_action(action[6:], hand_limits)
+        # hand_qpos = [hand_qpos[0]*(-1)**i for i in range(2)]
         # allowed_hand_motion = self.velocity_limit[6:] * self.control_time_step
         # hand_qpos = np.clip(hand_qpos, current_qpos[6:] + allowed_hand_motion[:, 0],
         #                     current_qpos[6:] + allowed_hand_motion[:, 1])
         target_qpos = np.concatenate([arm_qpos, hand_qpos])
+        # target_qpos = np.concatenate([arm_qpos, hand_qpos])
         target_qvel = np.zeros_like(target_qpos)
         target_qvel[:self.arm_dof] = arm_qvel
         self.robot.set_drive_target(target_qpos)

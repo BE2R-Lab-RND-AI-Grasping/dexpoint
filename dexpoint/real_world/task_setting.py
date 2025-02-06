@@ -47,3 +47,41 @@ IMG_CONFIG = {
         },
     },
 }
+
+IIWA_UHVAT_IMG_CONFIG = {
+    "relocate_goal_only": {
+        "goal": {"target_object": 64},
+    },
+    "relocate_robot_only": {
+        "robot": {
+            "uhvat_link_2": 32, "uhvat_link_1": 32, "uhvat_link_0": 32,
+        },
+    },
+    "relocate_goal_robot": {
+        "goal": {"target_object": 64},
+        "robot": {
+            "uhvat_link_2": 32, "uhvat_link_1": 32, "uhvat_link_0": 32,
+        },
+    },
+}
+
+IIWA_BARRET_IMG_CONFIG = {
+    "relocate_goal_only": {
+        "goal": {"target_object": 64},
+    },
+    "relocate_robot_only": {
+        "robot": {
+            "finger_3_med_link":12, "finger_3_dist_link":12,
+            "finger_1_prox_link":12, "finger_1_med_link":12, "finger_1_dist_link":12,
+            "finger_2_prox_link":12, "finger_2_med_link":12, "finger_2_dist_link":12,
+        },
+    },
+    "relocate_goal_robot": {
+        "goal": {"target_object": 64},
+        "robot": { 
+            "finger_3_med_link":12, "finger_3_dist_link":12,
+            "finger_1_prox_link":12, "finger_1_med_link":12, "finger_1_dist_link":12,
+            "finger_2_prox_link":12, "finger_2_med_link":12, "finger_2_dist_link":12,
+        },
+    },
+}
